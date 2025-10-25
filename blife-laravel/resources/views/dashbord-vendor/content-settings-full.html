@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>การตั้งค่าเนื้อหา</title>
+    <link rel="stylesheet" href="assets/css/vendors/bootstrap.css">
+    <style>
+        .settings-section { border: 1px solid #dee2e6; padding: 1rem; margin-bottom: 1rem; border-radius: 0.375rem; }
+        .settings-section h5 { border-bottom: 1px solid #dee2e6; padding-bottom: 0.5rem; }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h3>การตั้งค่าเนื้อหา</h3>
+        <div class="mb-3">
+            <label>เลือกหน้า:</label>
+            <select class="form-select" id="pageSelector">
+                <option value="add-new-attributes">เพิ่มคุณลักษณะ</option>
+                <option value="add-new-category">เพิ่มหมวดหมู่ใหม่</option>
+                <option value="add-new-product">เพิ่มสินค้าใหม่</option>
+                <option value="index">แดชบอร์ด</option>
+            </select>
+        </div>
+        <form id="settingsForm">
+            <div class="settings-section">
+                <h5>ส่วนหัว</h5>
+                <div class="mb-3">
+                    <label>ข้อความค้นหา</label>
+                    <input type="text" class="form-control" id="searchPlaceholder" value="ค้นหา Blife ..">
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h5>แถบด้านข้าง</h5>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label>แดชบอร์ด</label>
+                        <input type="text" class="form-control" id="sidebarDashboard" value="แดชบอร์ด">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>สินค้า</label>
+                        <input type="text" class="form-control" id="sidebarProducts" value="สินค้า">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>หมวดหมู่</label>
+                        <input type="text" class="form-control" id="sidebarCategory" value="หมวดหมู่">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>คุณลักษณะ</label>
+                        <input type="text" class="form-control" id="sidebarAttributes" value="คุณลักษณะ">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>ผู้ใช้</label>
+                        <input type="text" class="form-control" id="sidebarUsers" value="ผู้ใช้">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>คำสั่งซื้อ</label>
+                        <input type="text" class="form-control" id="sidebarOrders" value="คำสั่งซื้อ">
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h5>เนื้อหาหลัก</h5>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label>หัวข้อหน้า</label>
+                        <input type="text" class="form-control" id="pageTitle" value="เพิ่มคุณลักษณะ">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>ป้ายชื่อคุณลักษณะ</label>
+                        <input type="text" class="form-control" id="attributeNameLabel" value="ชื่อคุณลักษณะ">
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-primary" onclick="saveSettings()">บันทึก</button>
+        </form>
+    </div>
+
+    <script src="assets/js/jquery-3.6.0.min.js"></script>
+    <script>
+        let translations = {};
+
+        async function loadTranslations() {
+            try {
+                const response = await fetch('data/translations-full.json');
+                translations = await response.json();
+                loadPageSettings();
+            } catch (error) {
+                console.error('Error loading translations:', error);
+            }
+        }
+
+        function loadPageSettings() {
+            const pageKey = document.getElementById('pageSelector').value;
+            const pageData = translations.pages[pageKey];
+            if (pageData) {
+                document.getElementById('searchPlaceholder').value = pageData.header.search_placeholder;
+                document.getElementById('sidebarDashboard').value = pageData.sidebar.dashboard;
+                document.getElementById('sidebarProducts').value = pageData.sidebar.products;
+                document.getElementById('sidebarCategory').value = pageData.sidebar.category;
+                document.getElementById('sidebarAttributes').value = pageData.sidebar.attributes;
+                document.getElementById('sidebarUsers').value = pageData.sidebar.users;
+                document.getElementById('sidebarOrders').value = pageData.sidebar.orders;
+                document.getElementById('pageTitle').value = pageData.title;
+                document.getElementById('attributeNameLabel').value = pageData.main.attribute_name;
+            }
+        }
+
+        function saveSettings() {
+            const pageKey = document.getElementById('pageSelector').value;
+            if (translations.pages[pageKey]) {
+                translations.pages[pageKey].header.search_placeholder = document.getElementById('searchPlaceholder').value;
+                translations.pages[pageKey].sidebar.dashboard = document.getElementById('sidebarDashboard').value;
+                translations.pages[pageKey].sidebar.products = document.getElementById('sidebarProducts').value;
+                translations.pages[pageKey].sidebar.category = document.getElementById('sidebarCategory').value;
+                translations.pages[pageKey].sidebar.attributes = document.getElementById('sidebarAttributes').value;
+                translations.pages[pageKey].sidebar.users = document.getElementById('sidebarUsers').value;
+                translations.pages[pageKey].sidebar.orders = document.getElementById('sidebarOrders').value;
+                translations.pages[pageKey].title = document.getElementById('pageTitle').value;
+                translations.pages[pageKey].main.attribute_name = document.getElementById('attributeNameLabel').value;
+
+                // Save to file (in real implementation, this would be an API call)
+                console.log('Settings saved:', translations);
+                alert('บันทึกเรียบร้อย!');
+            }
+        }
+
+        document.getElementById('pageSelector').addEventListener('change', loadPageSettings);
+
+        document.addEventListener('DOMContentLoaded', loadTranslations);
+    </script>
+</body>
+</html>

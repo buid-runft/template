@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>การตั้งค่าเนื้อหา</title>
+    <link rel="stylesheet" href="assets/css/vendors/bootstrap.css">
+    <style>
+        .settings-section { border: 1px solid #dee2e6; padding: 1rem; margin-bottom: 1rem; border-radius: 0.375rem; }
+        .settings-section h5 { border-bottom: 1px solid #dee2e6; padding-bottom: 0.5rem; }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h3>การตั้งค่าเนื้อหา</h3>
+        <div class="mb-3">
+            <label>เลือกหน้า:</label>
+            <select class="form-select" id="pageSelector">
+                <option value="index">หน้าหลัก</option>
+                <option value="about-us">เกี่ยวกับเรา</option>
+                <option value="contact-us">ติดต่อเรา</option>
+                <option value="cart">ตะกร้าสินค้า</option>
+                <option value="checkout">ชำระเงิน</option>
+                <option value="login">เข้าสู่ระบบ</option>
+                <option value="sign-up">สมัครสมาชิก</option>
+                <option value="user-dashboard">แดชบอร์ดผู้ใช้</option>
+                <option value="wishlist">รายการที่ชอบ</option>
+                <option value="search">ค้นหา</option>
+                <option value="faq">คำถามที่พบบ่อย</option>
+                <option value="blog-list">บล็อก</option>
+                <option value="blog-detail">รายละเอียดบล็อก</option>
+                <option value="order-success">คำสั่งซื้อสำเร็จ</option>
+                <option value="order-tracking">ติดตามคำสั่งซื้อ</option>
+                <option value="seller-dashboard">แดชบอร์ดผู้ขาย</option>
+                <option value="seller-become">สมัครเป็นผู้ขาย</option>
+                <option value="404">404</option>
+                <option value="coming-soon">เร็วๆ นี้</option>
+                <option value="forgot">ลืมรหัสผ่าน</option>
+                <option value="otp">ยืนยัน OTP</option>
+            </select>
+        </div>
+        <form id="settingsForm">
+            <div class="settings-section">
+                <h5>ส่วนหัว</h5>
+                <div class="mb-3">
+                    <label>ข้อความค้นหา</label>
+                    <input type="text" class="form-control" id="searchPlaceholder" value="ค้นหาสินค้า...">
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h5>เนื้อหาหลัก</h5>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label>หัวข้อหน้า</label>
+                        <input type="text" class="form-control" id="pageTitle" value="Blife Healthy - บริการจัดส่งสุขภาพตามความต้องการ">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>คำอธิบายหน้า</label>
+                        <input type="text" class="form-control" id="pageDescription" value="ยินดีต้อนรับสู่ Blife Healthy">
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-primary" onclick="saveSettings()">บันทึก</button>
+        </form>
+    </div>
+
+    <script src="assets/js/jquery-3.6.0.min.js"></script>
+    <script>
+        let translations = {};
+
+        async function loadTranslations() {
+            try {
+                const response = await fetch('data/translations-full.json');
+                translations = await response.json();
+                loadPageSettings();
+            } catch (error) {
+                console.error('Error loading translations:', error);
+            }
+        }
+
+        function loadPageSettings() {
+            const pageKey = document.getElementById('pageSelector').value;
+            const pageData = translations.pages[pageKey];
+            if (pageData) {
+                document.getElementById('searchPlaceholder').value = pageData.header.search_placeholder;
+                document.getElementById('pageTitle').value = pageData.title;
+                document.getElementById('pageDescription').value = pageData.main.welcome || pageData.main.about_title || pageData.main.contact_title || '';
+            }
+        }
+
+        function saveSettings() {
+            const pageKey = document.getElementById('pageSelector').value;
+            if (translations.pages[pageKey]) {
+                translations.pages[pageKey].header.search_placeholder = document.getElementById('searchPlaceholder').value;
+                translations.pages[pageKey].title = document.getElementById('pageTitle').value;
+
+                // Update main content based on page type
+                if (pageKey === 'index') {
+                    translations.pages[pageKey].main.welcome = document.getElementById('pageDescription').value;
+                } else if (pageKey === 'about-us') {
+                    translations.pages[pageKey].main.about_title = document.getElementById('pageDescription').value;
+                } else if (pageKey === 'contact-us') {
+                    translations.pages[pageKey].main.contact_title = document.getElementById('pageDescription').value;
+                }
+
+                // Save to file (in real implementation, this would be an API call)
+                console.log('Settings saved:', translations);
+                alert('บันทึกเรียบร้อย!');
+            }
+        }
+
+        document.getElementById('pageSelector').addEventListener('change', loadPageSettings);
+
+        document.addEventListener('DOMContentLoaded', loadTranslations);
+    </script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+// Dashboard Styles
+@use '../variables';
+@use '../mixins';
+
+// Import dashboard-specific partials
+@use 'sidebar';
+@use 'widgets';
+@use 'header';
+@use 'footer';
+
+// Base dashboard styles
+.dashboard {
+  font-family: variables.$font-family-base;
+  color: variables.$text-color;
+  background: variables.$background-color;
+
+  .main-content {
+    margin-left: 250px; // Sidebar width
+    padding: variables.$spacing-lg;
+    transition: margin-left 0.3s ease;
+  }
+
+  .sidebar-collapsed & .main-content {
+    margin-left: 70px;
+  }
+}
+
+// Responsive mixins
+@include mixins.responsive-mobile {
+  .dashboard {
+    .main-content {
+      margin-left: 0;
+      padding: variables.$spacing-sm;
+    }
+  }
+}
+
+@include mixins.responsive-tablet {
+  .dashboard {
+    .main-content {
+      margin-left: 200px;
+      padding: variables.$spacing-md;
+    }
+  }
+}

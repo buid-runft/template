@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>การตั้งค่าเนื้อหาแบบไดนามิก</title>
+    <link rel="stylesheet" href="assets/css/vendors/bootstrap.css">
+    <style>
+        .settings-section { border: 1px solid #dee2e6; padding: 1rem; margin-bottom: 1rem; border-radius: 0.375rem; }
+        .settings-section h5 { border-bottom: 1px solid #dee2e6; padding-bottom: 0.5rem; }
+        .sync-status { margin-top: 1rem; padding: 0.5rem; border-radius: 0.25rem; }
+        .sync-success { background-color: #d4edda; color: #155724; }
+        .sync-error { background-color: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h3>การตั้งค่าเนื้อหาแบบไดนามิก</h3>
+        <p class="text-muted">ตั้งค่าเนื้อหาจาก back-end dashboard และซิงค์ไปยัง front-end โดยอัตโนมัติ</p>
+
+        <div class="mb-3">
+            <label>เลือกหน้า:</label>
+            <select class="form-select" id="pageSelector">
+                <option value="add-new-attributes">เพิ่มคุณลักษณะ</option>
+                <option value="add-new-category">เพิ่มหมวดหมู่ใหม่</option>
+                <option value="add-new-product">เพิ่มสินค้าใหม่</option>
+                <option value="index">แดชบอร์ด</option>
+                <!-- Front-end pages -->
+                <option value="front-end-index">หน้าหลัก (Front-end)</option>
+                <option value="about-us">เกี่ยวกับเรา (Front-end)</option>
+                <option value="contact-us">ติดต่อเรา (Front-end)</option>
+                <option value="cart">ตะกร้าสินค้า (Front-end)</option>
+                <option value="checkout">ชำระเงิน (Front-end)</option>
+                <option value="login">เข้าสู่ระบบ (Front-end)</option>
+                <option value="sign-up">สมัครสมาชิก (Front-end)</option>
+            </select>
+        </div>
+
+        <form id="settingsForm">
+            <div class="settings-section">
+                <h5>ส่วนหัว</h5>
+                <div class="mb-3">
+                    <label>ข้อความค้นหา</label>
+                    <input type="text" class="form-control" id="searchPlaceholder" value="ค้นหา Blife ..">
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h5>แถบด้านข้าง (สำหรับ back-end)</h5>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label>แดชบอร์ด</label>
+                        <input type="text" class="form-control" id="sidebarDashboard" value="แดชบอร์ด">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>สินค้า</label>
+                        <input type="text" class="form-control" id="sidebarProducts" value="สินค้า">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>หมวดหมู่</label>
+                        <input type="text" class="form-control" id="sidebarCategory" value="หมวดหมู่">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>คุณลักษณะ</label>
+                        <input type="text" class="form-control" id="sidebarAttributes" value="คุณลักษณะ">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>ผู้ใช้</label>
+                        <input type="text" class="form-control" id="sidebarUsers" value="ผู้ใช้">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>คำสั่งซื้อ</label>
+                        <input type="text" class="form-control" id="sidebarOrders" value="คำสั่งซื้อ">
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h5>เนื้อหาหลัก</h5>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label>หัวข้อหน้า</label>
+                        <input type="text" class="form-control" id="pageTitle" value="เพิ่มคุณลักษณะ">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label>ป้ายชื่อคุณลักษณะ</label>
+                        <input type="text" class="form-control" id="attributeNameLabel" value="ชื่อคุณลักษณะ">
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-primary" onclick="saveSettings()">บันทึกและซิงค์</button>
+            <button type="button" class="btn btn-secondary ms-2" onclick="syncAll()">ซิงค์ทั้งหมด</button>
+        </form>
+
+        <div id="syncStatus" class="sync-status" style="display: none;"></div>
+    </div>
+
+    <script src="assets/js/jquery-3.6.0.min.js"></script>
+    <script src="js/cms-api.js"></script>
+    <script>
+        let translations = {};
+        let currentPageKey = 'add-new-attributes';
+        let isFrontEnd = false;
+
+        async function loadTranslations() {
+            try {
+                translations = await window.cmsAPI.loadTranslations();
+                loadPageSettings();
+            } catch (error) {
+                console.error('Error loading translations:', error);
+                showSyncStatus('เกิดข้อผิดพลาดในการโหลดข้อมูล', 'error');
+            }
+        }
+
+        function loadPageSettings() {
+            const selector = document.getElementById('pageSelector');
+            currentPageKey = selector.value;
+            isFrontEnd = currentPageKey.includes('front-end');
+
+            // Convert front-end page keys
+            let actualPageKey = currentPageKey;
+            if (isFrontEnd) {
+                actualPageKey = currentPageKey.replace('front-end-', '');
+            }
+
+            const pageData = translations.pages[actualPageKey];
+            if (pageData) {
+                document.getElementById('searchPlaceholder').value = pageData.header?.search_placeholder || '';
+
+                // Show/hide sidebar section based on page type
+                const sidebarSection = document.querySelector('.settings-section:nth-child(3)');
+                if (isFrontEnd) {
+                    sidebarSection.style.display = 'none';
+                } else {
+                    sidebarSection.style.display = 'block';
+                    document.getElementById('sidebarDashboard').value = pageData.sidebar?.dashboard || '';
+                    document.getElementById('sidebarProducts').value = pageData.sidebar?.products || '';
+                    document.getElementById('sidebarCategory').value = pageData.sidebar?.category || '';
+                    document.getElementById('sidebarAttributes').value = pageData.sidebar?.attributes || '';
+                    document.getElementById('sidebarUsers').value = pageData.sidebar?.users || '';
+                    document.getElementById('sidebarOrders').value = pageData.sidebar?.orders || '';
+                }
+
+                document.getElementById('pageTitle').value = pageData.title || '';
+                document.getElementById('attributeNameLabel').value = pageData.main?.attribute_name || pageData.main?.welcome || '';
+            }
+        }
+
+        async function saveSettings() {
+            try {
+                let actualPageKey = currentPageKey;
+                if (isFrontEnd) {
+                    actualPageKey = currentPageKey.replace('front-end-', '');
+                }
+
+                if (!translations.pages[actualPageKey]) {
+                    translations.pages[actualPageKey] = {
+                        header: {},
+                        sidebar: {},
+                        main: {},
+                        footer: {},
+                        modals: {}
+                    };
+                }
+
+                const pageData = translations.pages[actualPageKey];
+
+                // Update header
+                pageData.header.search_placeholder = document.getElementById('searchPlaceholder').value;
+
+                // Update sidebar (only for back-end)
+                if (!isFrontEnd) {
+                    pageData.sidebar.dashboard = document.getElementById('sidebarDashboard').value;
+                    pageData.sidebar.products = document.getElementById('sidebarProducts').value;
+                    pageData.sidebar.category = document.getElementById('sidebarCategory').value;
+                    pageData.sidebar.attributes = document.getElementById('sidebarAttributes').value;
+                    pageData.sidebar.users = document.getElementById('sidebarUsers').value;
+                    pageData.sidebar.orders = document.getElementById('sidebarOrders').value;
+                }
+
+                // Update main content
+                pageData.title = document.getElementById('pageTitle').value;
+                if (pageData.main) {
+                    pageData.main.attribute_name = document.getElementById('attributeNameLabel').value;
+                }
+
+                // Save using CMS API and sync to front-end
+                const saved = await window.cmsAPI.updatePageContent(actualPageKey, { translations: pageData });
+                if (saved) {
+                    showSyncStatus('บันทึกและซิงค์เรียบร้อย!', 'success');
+                } else {
+                    showSyncStatus('เกิดข้อผิดพลาดในการบันทึก', 'error');
+                }
+            } catch (error) {
+                console.error('Error saving settings:', error);
+                showSyncStatus('เกิดข้อผิดพลาดในการบันทึก', 'error');
+            }
+        }
+
+        async function syncAll() {
+            try {
+                const syncTranslations = await window.cmsAPI.syncFrontEndTranslations();
+                const syncSettings = await window.cmsAPI.syncFrontEndCmsSettings();
+
+                if (syncTranslations && syncSettings) {
+                    showSyncStatus('ซิงค์ข้อมูลทั้งหมดไปยัง front-end เรียบร้อย!', 'success');
+                } else {
+                    showSyncStatus('เกิดข้อผิดพลาดในการซิงค์', 'error');
+                }
+            } catch (error) {
+                console.error('Error syncing:', error);
+                showSyncStatus('เกิดข้อผิดพลาดในการซิงค์', 'error');
+            }
+        }
+
+        function showSyncStatus(message, type) {
+            const statusDiv = document.getElementById('syncStatus');
+            statusDiv.textContent = message;
+            statusDiv.className = `sync-status sync-${type}`;
+            statusDiv.style.display = 'block';
+
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        document.getElementById('pageSelector').addEventListener('change', loadPageSettings);
+
+        document.addEventListener('DOMContentLoaded', loadTranslations);
+    </script>
+</body>
+</html>

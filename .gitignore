@@ -1,0 +1,18 @@
+/.idea
+/.qodo
+/.vscode
+/assets
+/composer.json
+/composer.lock
+/dashbord-admin
+/dashbord-vendor
+/documentation
+/email-templete
+/Flag_of_Thailand.png
+/gulpfile.js
+/index.html
+/invoice
+/landing-page customer
+/node_modules
+/package.json
+/vendor

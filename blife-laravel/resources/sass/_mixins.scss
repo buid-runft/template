@@ -1,0 +1,113 @@
+// Mixins for common styles
+
+// Flexbox utilities
+@mixin flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@mixin flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+// Button styles
+@mixin button-base {
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+@mixin button-primary {
+    @include button-base;
+    background-color: var(--theme-color);
+    color: $white;
+
+    &:hover {
+        background-color: var(--theme-color1);
+    }
+}
+
+// Responsive breakpoints
+@mixin respond-to($breakpoint) {
+    @if map-has-key($max-breakpoints, $breakpoint) {
+        @media (max-width: map-get($max-breakpoints, $breakpoint)) {
+            @content;
+        }
+    } @else if map-has-key($min-breakpoints, $breakpoint) {
+        @media (min-width: map-get($min-breakpoints, $breakpoint)) {
+            @content;
+        }
+    }
+}
+
+// Typography
+@mixin text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+// Shadows
+@mixin shadow-sm {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+
+@mixin shadow-md {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+@mixin shadow-lg {
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+// Animations
+@mixin fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+// Card styles
+@mixin card-base {
+    background: $white;
+    border-radius: 8px;
+    padding: 1rem;
+    @include shadow-sm;
+    transition: box-shadow 0.3s ease;
+
+    &:hover {
+        @include shadow-md;
+    }
+}
+
+// Form inputs
+@mixin input-base {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid $border-color;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+
+    &:focus {
+        outline: none;
+        border-color: var(--theme-color);
+    }
+}

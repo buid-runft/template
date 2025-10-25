@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="th" dir="ltr">
+
+<head>
+    <!-- meta data -->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Blife admin CMS settings">
+    <meta name="keywords" content="admin template, Blife admin template">
+    <meta name="author" content="pixelstrap">
+    <link rel="icon" href="assets/images/favicon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="assets/images/favicon.png" type="image/x-icon">
+    <title>Blife - การตั้งค่าเนื้อหา</title>
+
+    <!-- Google font -->
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap css -->
+    <link rel="stylesheet" type="text/css" href="assets/css/vendors/bootstrap.css">
+
+    <!-- App css -->
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+
+    <style>
+        .settings-section {
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .settings-section h5 {
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- page-wrapper start -->
+    <div class="page-wrapper compact-wrapper" id="pageWrapper">
+        <!-- Page Body start -->
+        <div class="page-body-wrapper">
+            <div class="page-body">
+                <!-- Content Settings Start -->
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>การตั้งค่าเนื้อหา - เพิ่มคุณลักษณะ</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form id="contentSettingsForm">
+
+                                        <!-- Header Settings -->
+                                        <div class="settings-section">
+                                            <h5>ส่วนหัว (Header)</h5>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="searchPlaceholder">ข้อความค้นหา</label>
+                                                        <input type="text" class="form-control" id="searchPlaceholder" value="ค้นหา Blife ..">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="notificationsTitle">หัวข้อการแจ้งเตือน</label>
+                                                        <input type="text" class="form-control" id="notificationsTitle" value="การแจ้งเตือน">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>ข้อความการแจ้งเตือน</label>
+                                                <div id="notificationsList">
+                                                    <div class="input-group mb-2">
+                                                        <input type="text" class="form-control" value="กำลังดำเนินการจัดส่ง">
+                                                        <button class="btn btn-outline-danger" type="button" onclick="removeNotification(this)">ลบ</button>
+                                                    </div>
+                                                    <div class="input-group mb-2">
+                                                        <input type="text" class="form-control" value="คำสั่งซื้อเสร็จสิ้น">
+                                                        <button class="btn btn-outline-danger" type="button" onclick="removeNotification(this)">ลบ</button>
+                                                    </div>
+                                                </div>
+                                                <button type="button" class="btn btn-outline-primary" onclick="addNotification()">เพิ่มการแจ้งเตือน</button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Sidebar Settings -->
+                                        <div class="settings-section">
+                                            <h5>แถบด้านข้าง (Sidebar)</h5>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="sidebarDashboard">แดชบอร์ด</label>
+                                                        <input type="text" class="form-control" id="sidebarDashboard" value="แดชบอร์ด">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="sidebarProducts">สินค้า</label>
+                                                        <input type="text" class="form-control" id="sidebarProducts" value="สินค้า">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="sidebarCategory">หมวดหมู่</label>
+                                                        <input type="text" class="form-control" id="sidebarCategory" value="หมวดหมู่">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="sidebarAttributes">คุณลักษณะ</label>
+                                                        <input type="text" class="form-control" id="sidebarAttributes" value="คุณลักษณะ">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Main Content Settings -->
+                                        <div class="settings-section">
+                                            <h5>เนื้อหาหลัก (Main Content)</h5>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="pageTitle">หัวข้อหน้า</label>
+                                                        <input type="text" class="form-control" id="pageTitle" value="เพิ่มคุณลักษณะ">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="attributeNameLabel">ป้ายชื่อคุณลักษณะ</label>
+                                                        <input type="text" class="form-control" id="attributeNameLabel" value="ชื่อคุณลักษณะ">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="attributeValueLabel">ป้ายค่าคุณลักษณะ</label>
+                                                        <input type="text" class="form-control" id="attributeValueLabel" value="ค่าคุณลักษณะ">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="attributeNamePlaceholder">ตัวอย่างชื่อคุณลักษณะ</label>
+                                                        <input type="text" class="form-control" id="attributeNamePlaceholder" value="ชื่อคุณลักษณะ">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="attributeValuePlaceholder">ตัวอย่างค่าคุณลักษณะ</label>
+                                                        <input type="text" class="form-control" id="attributeValuePlaceholder" value="ค่าคุณลักษณะ">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>ปุ่ม</label>
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <input type="text" class="form-control" id="removeButton" value="ลบ">
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <input type="text" class="form-control" id="addValueButton" value="เพิ่มค่า">
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <input type="text" class="form-control" id="addAttributeButton" value="เพิ่มคุณลักษณะ">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Footer Settings -->
+                                        <div class="settings-section">
+                                            <h5>ส่วนท้าย (Footer)</h5>
+                                            <div class="form-group">
+                                                <label for="copyrightText">ข้อความลิขสิทธิ์</label>
+                                                        <input type="text" class="form-control" id="copyrightText" value="ลิขสิทธิ์ 2025 © Blife theme โดย pixelstrap">
+                                                    </div>
+                                                </div>
+
+                                        <!-- Modal Settings -->
+                                        <div class="settings-section">
+                                            <h5>โมดอล (Modal)</h5>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="logoutTitle">หัวข้อออกจากระบบ</label>
+                                                        <input type="text" class="form-control" id="logoutTitle" value="กำลังออกจากระบบ">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="logoutMessage">ข้อความออกจากระบบ</label>
+                                                        <input type="text" class="form-control" id="logoutMessage" value="คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="modalNo">ปุ่มไม่</label>
+                                                        <input type="text" class="form-control" id="modalNo" value="ไม่">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label for="modalYes">ปุ่มใช่</label>
+                                                        <input type="text" class="form-control" id="modalYes" value="ใช่">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="text-end">
+                                            <button type="button" class="btn btn-secondary me-2" onclick="resetToDefault()">รีเซ็ตเป็นค่าเริ่มต้น</button>
+                                            <button type="button" class="btn btn-primary" onclick="saveSettings()">บันทึกการตั้งค่า</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Content Settings End -->
+            </div>
+        </div>
+        <!-- Page Body End -->
+    </div>
+    <!-- page-wrapper End -->
+
+    <!-- latest js -->
+    <script src="assets/js/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/bootstrap/bootstrap.bundle.min.js"></script>
+
+    <!-- Content Settings Script -->
+    <script>
+        // Load current settings
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCurrentSettings();
+        });
+
+        function loadCurrentSettings() {
+            const token = localStorage.getItem('auth_token');
+            if (!token) {
+                alert('กรุณาเข้าสู่ระบบก่อน');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            fetch('https://api.blifehealthy.com/api/translations', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.data && data.data.pages && data.data.pages['add-new-attributes']) {
+                        const pageData = data.data.pages['add-new-attributes'];
+
+                        // Header
+                        document.getElementById('searchPlaceholder').value = pageData.header?.search_placeholder || '';
+                        document.getElementById('notificationsTitle').value = pageData.header?.notifications_title || '';
+
+                        // Clear existing notifications
+                        const notificationsList = document.getElementById('notificationsList');
+                        notificationsList.innerHTML = '';
+
+                        // Add notifications
+                        if (pageData.header?.notifications) {
+                            pageData.header.notifications.forEach(notification => {
+                                addNotificationField(notification);
+                            });
+                        }
+
+                        // Sidebar
+                        document.getElementById('sidebarDashboard').value = pageData.sidebar?.dashboard || '';
+                        document.getElementById('sidebarProducts').value = pageData.sidebar?.product || '';
+                        document.getElementById('sidebarCategory').value = pageData.sidebar?.category || '';
+                        document.getElementById('sidebarAttributes').value = pageData.sidebar?.attributes || '';
+
+                        // Main content
+                        document.getElementById('pageTitle').value = pageData.main?.add_attribute || '';
+                        document.getElementById('attributeNameLabel').value = pageData.main?.attribute_name || '';
+                        document.getElementById('attributeValueLabel').value = pageData.main?.attribute_value || '';
+                        document.getElementById('attributeNamePlaceholder').value = pageData.main?.attribute_name_placeholder || '';
+                        document.getElementById('attributeValuePlaceholder').value = pageData.main?.attribute_value_placeholder || '';
+                        document.getElementById('removeButton').value = pageData.main?.remove || '';
+                        document.getElementById('addValueButton').value = pageData.main?.add_value || '';
+                        document.getElementById('addAttributeButton').value = pageData.main?.add_attribute_button || '';
+
+                        // Footer
+                        document.getElementById('copyrightText').value = pageData.footer?.copyright || '';
+
+                        // Modal
+                        document.getElementById('logoutTitle').value = pageData.modals?.logout_title || '';
+                        document.getElementById('logoutMessage').value = pageData.modals?.logout_message || '';
+                        document.getElementById('modalNo').value = pageData.modals?.no || '';
+                        document.getElementById('modalYes').value = pageData.modals?.yes || '';
+                    } else {
+                        alert('ไม่สามารถโหลดการตั้งค่าได้: ' + (data.message || 'Unknown error'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading settings:', error);
+                    alert('เกิดข้อผิดพลาดในการโหลดการตั้งค่า');
+                });
+        }
+
+        function addNotification() {
+            addNotificationField('');
+        }
+
+        function addNotificationField(value) {
+            const notificationsList = document.getElementById('notificationsList');
+            const div = document.createElement('div');
+            div.className = 'input-group mb-2';
+            div.innerHTML = `
+                <input type="text" class="form-control" value="${value}">
+                <button class="btn btn-outline-danger" type="button" onclick="removeNotification(this)">ลบ</button>
+            `;
+            notificationsList.appendChild(div);
+        }
+
+        function removeNotification(button) {
+            button.parentElement.remove();
+        }
+
+        function saveSettings() {
+            const settings = {
+                pages: {
+                    'add-new-attributes': {
+                        title: 'Blife - แก้ไขคุณลักษณะ',
+                        header: {
+                            search_placeholder: document.getElementById('searchPlaceholder').value,
+                            notifications_title: document.getElementById('notificationsTitle').value,
+                            notifications: Array.from(document.querySelectorAll('#notificationsList input')).map(input => input.value),
+                            check_all: 'ตรวจสอบการแจ้งเตือนทั้งหมด',
+                            profile_menu: {
+                                users: 'ผู้ใช้',
+                                orders: 'คำสั่งซื้อ',
+                                support_tickets: 'ตั๋วสนับสนุน',
+                                settings: 'การตั้งค่า',
+                                logout: 'ออกจากระบบ'
+                            }
+                        },
+                        sidebar: {
+                            dashboard: document.getElementById('sidebarDashboard').value,
+                            product: document.getElementById('sidebarProducts').value,
+                            products: document.getElementById('sidebarProducts').value,
+                            add_new_product: 'เพิ่มสินค้าใหม่',
+                            category: document.getElementById('sidebarCategory').value,
+                            category_list: 'รายการหมวดหมู่',
+                            add_new_category: 'เพิ่มหมวดหมู่ใหม่',
+                            attributes: document.getElementById('sidebarAttributes').value,
+                            attributes_list: 'คุณลักษณะ',
+                            add_attributes: 'เพิ่มคุณลักษณะ',
+                            users: 'ผู้ใช้',
+                            all_users: 'ผู้ใช้ทั้งหมด',
+                            add_new_user: 'เพิ่มผู้ใช้ใหม่',
+                            roles: 'บทบาท',
+                            all_roles: 'บทบาททั้งหมด',
+                            create_role: 'สร้างบทบาท',
+                            media: 'สื่อ',
+                            orders: 'คำสั่งซื้อ',
+                            order_list: 'รายการคำสั่งซื้อ',
+                            order_detail: 'รายละเอียดคำสั่งซื้อ',
+                            order_tracking: 'ติดตามคำสั่งซื้อ',
+                            localization: 'การแปลภาษา',
+                            translation: 'การแปล',
+                            currency_rates: 'อัตราแลกเปลี่ยน',
+                            coupons: 'คูปอง',
+                            coupon_list: 'รายการคูปอง',
+                            create_coupon: 'สร้างคูปอง',
+                            tax: 'ภาษี',
+                            product_review: 'รีวิวสินค้า',
+                            support_ticket: 'ตั๋วสนับสนุน',
+                            settings: 'การตั้งค่า',
+                            profile_setting: 'การตั้งค่าโปรไฟล์',
+                            reports: 'รายงาน',
+                            list_page: 'หน้ารายการ'
+                        },
+                        main: {
+                            add_attribute: document.getElementById('pageTitle').value,
+                            attribute_name: document.getElementById('attributeNameLabel').value,
+                            attribute_value: document.getElementById('attributeValueLabel').value,
+                            attribute_name_placeholder: document.getElementById('attributeNamePlaceholder').value,
+                            attribute_value_placeholder: document.getElementById('attributeValuePlaceholder').value,
+                            remove: document.getElementById('removeButton').value,
+                            add_value: document.getElementById('addValueButton').value,
+                            add_attribute_button: document.getElementById('addAttributeButton').value
+                        },
+                        footer: {
+                            copyright: document.getElementById('copyrightText').value
+                        },
+                        modals: {
+                            logout_title: document.getElementById('logoutTitle').value,
+                            logout_message: document.getElementById('logoutMessage').value,
+                            no: document.getElementById('modalNo').value,
+                            yes: document.getElementById('modalYes').value
+                        }
+                    }
+                }
+            };
+
+            // Save to API
+            fetch('https://api.blifehealthy.com/api/translations', {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(settings)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('บันทึกการตั้งค่าเรียบร้อยแล้ว!');
+                } else {
+                    alert('เกิดข้อผิดพลาดในการบันทึก: ' + (data.message || 'Unknown error'));
+                }
+            })
+            .catch(error => {
+                console.error('Error saving settings:', error);
+                alert('เกิดข้อผิดพลาดในการบันทึก');
+            });
+        }
+
+        function resetToDefault() {
+            if (confirm('คุณต้องการรีเซ็ตเป็นค่าเริ่มต้นหรือไม่?')) {
+                // Reload the page to reset form
+                location.reload();
+            }
+        }
+    </script>
+
+</body>
+
+</html>

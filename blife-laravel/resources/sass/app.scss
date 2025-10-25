@@ -1,0 +1,233 @@
+// Import variables and mixins
+@import 'variables';
+@import 'mixins';
+
+// Global styles
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: $public-sans;
+    line-height: 1.6;
+    color: $content-color;
+    background-color: $white;
+}
+
+// Typography
+h1, h2, h3, h4, h5, h6 {
+    font-family: $exo-sarif;
+    color: $title-color;
+    margin-bottom: 1rem;
+}
+
+p {
+    margin-bottom: 1rem;
+}
+
+// Buttons
+.btn {
+    @include button-base;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+
+    &.btn-primary {
+        @include button-primary;
+    }
+
+    &.btn-secondary {
+        background-color: $light-gray;
+        color: $content-color;
+
+        &:hover {
+            background-color: darken($light-gray, 10%);
+        }
+    }
+}
+
+// Cards
+.card {
+    @include card-base;
+}
+
+// Forms
+.form-group {
+    margin-bottom: 1rem;
+
+    label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+
+    input, textarea, select {
+        @include input-base;
+    }
+}
+
+// Layout utilities
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.row {
+    @include flex-between;
+    flex-wrap: wrap;
+}
+
+.col {
+    flex: 1;
+    padding: 0 1rem;
+}
+
+// Responsive design
+@include respond-to(md) {
+    .container {
+        padding: 0 0.5rem;
+    }
+
+    .row {
+        flex-direction: column;
+    }
+}
+
+// Animations
+.fade-in {
+    @include fade-in;
+}
+
+// Custom components
+.header {
+    background-color: $white;
+    @include shadow-sm;
+    padding: 1rem 0;
+
+    .logo {
+        font-family: $russo-sarif;
+        font-size: 2rem;
+        color: var(--theme-color);
+    }
+}
+
+.footer {
+    background-color: $black;
+    color: $white;
+    padding: 2rem 0;
+    text-align: center;
+}
+
+// Navigation
+.nav {
+    @include flex-between;
+
+    .nav-item {
+        margin: 0 1rem;
+
+        a {
+            color: $content-color;
+            text-decoration: none;
+            transition: color 0.3s ease;
+
+            &:hover {
+                color: var(--theme-color);
+            }
+        }
+    }
+}
+
+// Product cards
+.product-card {
+    @include card-base;
+    text-align: center;
+
+    .product-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 4px 4px 0 0;
+    }
+
+    .product-title {
+        font-weight: 600;
+        margin: 1rem 0 0.5rem;
+    }
+
+    .product-price {
+        color: var(--theme-color);
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+}
+
+// Modal
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    @include flex-center;
+    z-index: 1000;
+
+    .modal-content {
+        background: $white;
+        padding: 2rem;
+        border-radius: 8px;
+        max-width: 500px;
+        width: 90%;
+        @include shadow-lg;
+    }
+}
+
+// Utility classes
+.text-center {
+    text-align: center;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.d-none {
+    display: none;
+}
+
+.d-block {
+    display: block;
+}
+
+.d-flex {
+    display: flex;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.align-center {
+    align-items: center;
+}
+
+.mb-1 { margin-bottom: 0.25rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-3 { margin-bottom: 1rem; }
+.mb-4 { margin-bottom: 1.5rem; }
+
+.mt-1 { margin-top: 0.25rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 1rem; }
+.mt-4 { margin-top: 1.5rem; }
+
+.p-1 { padding: 0.25rem; }
+.p-2 { padding: 0.5rem; }
+.p-3 { padding: 1rem; }
+.p-4 { padding: 1.5rem; }
