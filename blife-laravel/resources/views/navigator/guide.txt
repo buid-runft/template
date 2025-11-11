@@ -1,0 +1,194 @@
+วิเคราะห์ส่วนนำทาง (Navigator Components)
+กลุ่มไฟล์นี้เป็นส่วนสำคัญที่กำหนดโครงสร้างการนำทางทั้งบน Desktop (Primary Menu, Category Dropdown) และ Mobile (Bottom Navigation)
+1. ไฟล์: hero.blade.php (ส่วนสไลเดอร์หลัก)
+ไฟล์นี้กำหนด Hero Section ที่มักจะมีรูปภาพขนาดใหญ่และแบนเนอร์ด้านข้าง
+<section x-data="Hero" class="home-section-wrap">
+    <div class="container">
+        <div class="row">
+            <div class="home-section-inner">
+                <div class="home-slider-wrap">
+                    <div
+                        class="home-slider overflow-hidden swiper"
+                        data-speed="{{ $slider->speed }}"
+                        data-autoplay="{{ $slider->autoplay ? 'true' : 'false' }}"
+                        data-autoplay-speed="{{ $slider->autoplay_speed }}"
+                        data-dots="{{ $slider->dots ? 'true' : 'false' }}"
+                        data-arrows="{{ $slider->arrows ? 'true' : 'false' }}"
+                    >
+                        <div class="swiper-wrapper">
+                            @foreach ($slider->slides as $slide)
+                                <a href="{{ $slide->call_to_action_url }}" class="swiper-slide">
+                                    <div
+                                        class="slider-bg-image"
+                                        data-swiper-parallax-x="50%"
+                                        style="background-image: url({{ $slide->file->path }})"
+                                    >
+                                    </div>
+
+                                    <div class="slide-content {{ $slide->isAlignedLeft() ? 'align-left' : 'align-right' }}">
+                                        <div class="captions">
+                                            <span
+                                                class="caption caption-1"
+                                                data-swiper-parallax-opacity="0.5"
+                                            >
+                                                {!! $slide->caption_1 !!}
+                                            </span>
+
+                                            <span
+                                                class="caption caption-2"
+                                                data-swiper-parallax-x="40%"
+                                                data-swiper-parallax-opacity="0"
+                                            >
+                                                {{ $slide->caption_2 }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </a>
+                            @endforeach
+                        </div>
+                        
+                        @if ($slider->dots) 
+                            <div class="swiper-pagination"></div>
+                        @endif
+
+                        @if ($slider->arrows)
+                            <div class="swiper-button-prev"></div>
+                            <div class="swiper-button-next"></div>
+                        @endif
+                    </div>
+                </div>
+
+                @include('storefront::public.home.sections.slider_banners')
+            </div>
+        </div>
+    </div>
+</section>
+
+2. ไฟล์: menu.blade.php (ชิ้นส่วนเมนูย่อยหลัก)
+ไฟล์นี้เป็นชิ้นส่วนที่ใช้ซ้ำสำหรับทุกรายการในเมนูหลักและเมนูหมวดหมู่
+<li class="{{ mega_menu_classes($menu, $type) }}">
+    <a
+        href="{{ $menu->url() }}"
+        class="nav-link menu-item"
+        target="{{ $menu->target() }}"
+        title="{{ $menu->name() }}"
+    >
+        @if ($menu->hasIcon())
+            <span class="menu-item-icon">
+                <i class="{{ $menu->icon() }}"></i>
+            </span>
+        @endif
+
+        {{ $menu->name() }}
+
+        @if ($menu->hasSubMenus())
+            <i class="las la-angle-right"></i>
+        @endif
+    </a>
+
+    @if ($menu->isFluid())
+        @include('storefront::public.layouts.navigation.fluid', ['subMenus' => $menu->subMenus()])
+    @else
+        @include('storefront::public.layouts.navigation.dropdown', ['subMenus' => $menu->subMenus()])
+    @endif
+</li>
+
+3. ไฟล์: category_menu.blade.php (เมนูหมวดหมู่แบบ Dropdown)
+ไฟล์นี้สร้างเมนูหมวดหมู่ขนาดใหญ่ที่มักจะอยู่ด้านซ้ายมือของ Hero Section
+<div
+    x-data="{ open: false }"
+    class="category-nav {{ request()->routeIs('home') ? 'show' : 'category-dropdown-menu' }}"
+>
+    <div class="category-nav-inner" @click="open = !open">
+        <span>{{ 'หมวดหมู่ทั้งหมด' }}</span> 
+        
+        <i class="las la-bars"></i>
+    </div>
+
+    @if ($categoryMenu->menus()->isNotEmpty())
+        <div
+            class="category-dropdown-wrap"
+            :class="{ show: open }"
+        >
+            <div class="category-dropdown">
+                <ul class="list-inline mega-menu vertical-megamenu">
+                    @foreach ($categoryMenu->menus() as $menu)
+                        @include('storefront::public.layouts.navigation.menu', ['type' => 'category_menu'])
+                    @endforeach
+
+                    <li class="more-categories">
+                        <a
+                            href="{{ route('categories.index') }}"
+                            class="menu-item"
+                            title="{{ 'หมวดหมู่ทั้งหมด' }}"
+                        >
+                            <span class="menu-item-icon">
+                                <i class="las la-plus-square"></i>
+                            </span>
+
+                            {{ 'หมวดหมู่ทั้งหมด' }} 
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    @endif
+</div>
+
+4. ไฟล์: bottom_navigation_menu.blade.php (เมนูนำทางด้านล่างสำหรับมือถือ)
+ไฟล์นี้สำคัญสำหรับการใช้งานบนมือถือ (Mobile UX)
+<section class="bottom-navigation-wrap d-lg-none">
+    <div class="container">
+        <ul class="bottom-navigation-items">
+            <li>
+                <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">
+                    @if (request()->routeIs('home'))
+                        <svg></svg>
+                    @else
+                        <svg></svg>
+                    @endif
+                    <span>{{ 'หน้าแรก' }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('categories.index') }}" class="{{ request()->routeIs('categories.index') ? 'active' : '' }}">
+                    @if (request()->routeIs('categories.index'))
+                        <svg></svg>
+                    @else
+                        <svg></svg>
+                    @endif
+                    <span>{{ 'หมวดหมู่' }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('cart') }}" class="{{ request()->routeIs('cart') ? 'active' : '' }}">
+                    @if (request()->routeIs('cart'))
+                        <svg></svg>
+                    @else
+                        <svg></svg>
+                    @endif
+                    <span>{{ 'ตะกร้า' }}</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route(Auth::check() ? 'account.profile.edit' : 'login') }}" class="{{ request()->routeIs('login') || request()->routeIs('account.*') ? 'active' : '' }}">
+                    @if (request()->routeIs('login') || request()->routeIs('account.*'))
+                        <svg></svg>
+                    @else
+                        <svg></svg>
+                    @endif
+                    <span>{{ Auth::check() ? 'โปรไฟล์' : 'บัญชี' }}</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</section>
+
+✅ Checklist สรุปองค์ประกอบสุดท้ายสำหรับ Navigator
+| องค์ประกอบ | รายละเอียดที่ Agent AI ต้องสร้าง/ตรวจสอบ |
+|---|---|
+| Backend Models/Data | Slider Model (เก็บค่า speed, autoplay, arrows, dots), Slide Model (เก็บ url, caption, file), Menu Model/Collection (สำหรับ primaryMenu และ categoryMenu) |
+| Routing / Page | ต้องมี Route ที่ชัดเจนสำหรับ: home, categories.index, cart, login, account.profile.edit |
+| Frontend Dependencies | ต้องติดตั้งและใช้งาน Swiper.js (สำหรับ Slider) และไลบรารี Frontend อื่น ๆ ที่ใช้สำหรับ x-data (เช่น Alpine.js) |
+| Recursive Partials | menu.blade.php และ dropdown.blade.php ต้องถูกออกแบบให้รองรับการเรียกตัวเองซ้ำ (Recursion) เพื่อแสดงเมนูย่อย |
+| Mobile Logic | ต้องมีการตรวจสอบสถานะการเข้าสู่ระบบ (Auth::check()) เพื่อเปลี่ยนลิงก์จาก Login เป็น Profile บน Bottom Navigation |
