@@ -1,40 +1,28 @@
-<div class="row gutters-16">
-    @php
-    // [BACKEND DIRECTIVE: LOGIC MOVEMENT - PHYSICAL CHECK]
-    // SERVICE LAYER (ShippingService): Method 'isPhysicalOrder(array $products)' ต้องตรวจสอบว่ามีสินค้า Physical หรือไม่ เพื่อแสดงตัวเลือกการจัดส่ง
-    $physical = false;
-    // ... ตรรกะเช็ค $product->digital ...
-    @endphp
+@php
+    // [BACKEND DIRECTIVE: LOGIC MOVEMENT - GROUPING]
+    // 1. SERVICE LAYER (ShippingService): Method 'groupCartItemsByOwner(Collection $carts)' ต้องทำตรรกะนี้บน Server
+    // 2. API ENDPOINT: POST /api/v1/checkout/get-delivery-options ต้องส่งข้อมูลที่จัดกลุ่มแล้ว (admin_products, seller_products)
+    // 3. REPOSITORY LAYER (CartRepository/ProductRepository): ต้องมี Method ดึงข้อมูล CartItem พร้อม Eager Loading Product
+    $admin_products = array();
+    $seller_products = array();
+    // ... ตรรกะการจัดกลุ่มสินค้าตาม 'admin' หรือ 'seller' ...
+@endphp
 
-    @if ($physical)
-    <div class="col-md-6 mb-2">
-        <h6 class="fs-14 fw-700 mt-3">{{ translate('Choose Delivery Type') }}</h6>
-        <div class="row gutters-16">
-            </div>
-
-        @if ($pickup_point_list)
-        <div class="mt-3 pickup_point_id_{{ $owner_id }} d-none">
-            </div>
-        @endif
-
-        @if (get_setting('shipping_type') == 'carrier_wise_shipping')
-        <div class="row pt-3 carrier_id_{{ $owner_id }}">
-            @if($carrier_list->isEmpty())
-                @else
-            @foreach($carrier_list as $carrier_key => $carrier)
-            <div class="col-md-12 mb-2">
-                <label class="aiz-megabox d-block bg-white mb-0">
-                    <input type="radio" name="carrier_id_{{ $owner_id }}" value="{{ $carrier->id }}" 
-                        onchange="updateDeliveryInfo('carrier', {{ $carrier->id }}, {{ $owner_id }})">
-                    <span class="d-flex flex-wrap p-3 aiz-megabox-elem rounded-0">
-                        <span class="flex-grow-1 pl-4 pl-sm-3 fw-600 mt-2 mt-sm-0 text-sm-right">{{ single_price(carrier_base_price($carts, $carrier->id, $owner_id, $shipping_info)) }}</span>
-                    </span>
-                </label>
-            </div>
-            @endforeach
-            @endif
+@if (!empty($admin_products))
+    <div class="card mb-3 border-left-0 border-top-0 border-right-0 border-bottom rounded-0 shadow-none">
+        <div class="card-header py-3 px-0 border-left-0 border-top-0 border-right-0 border-bottom border-dashed">
+            <h5 class="fs-16 fw-700 text-dark mb-0">{{ get_setting('site_name') }} {{ translate('Inhouse Products') }} ({{ sprintf("%02d", count($admin_products)) }})</h5>
         </div>
-        @endif
+        <div class="card-body p-0">
+            @include('frontend.partials.cart.delivery_info_details', ['products' => $admin_products, 'product_variation' => $admin_product_variation, 'owner_id' => get_admin()->id ])
+        </div>
     </div>
-    @endif
-</div>
+@endif
+<input type="hidden" id="carrierCount" value="{{ count($carrier_list) }}">
+@if (!empty($seller_products))
+    @foreach ($seller_products as $key => $seller_product)
+        <div class="card-body p-0">
+            @include('frontend.partials.cart.delivery_info_details', ['products' => $seller_product, 'product_variation' => $seller_product_variation, 'owner_id' => $key ])
+        </div>
+    @endforeach
+@endif
